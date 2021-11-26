@@ -453,6 +453,7 @@ class Generator(SHFGenerator):
         self.playback_delay = None
         self._ready = None
         self.single = None
+        self._user_registers = None
 
     def _init_generator_params(self):
         self._enable = Parameter(
@@ -496,6 +497,21 @@ class Generator(SHFGenerator):
             set_parser=Parse.set_true_false,
             get_parser=Parse.get_true_false,
         )
+
+    @property
+    def user_registers(self):
+        if not self._user_registers:
+            self._user_registers = [
+                Parameter(
+                    self,
+                    self._device._get_node_dict(
+                        f"qachannels/{self._index}/generator/userregs/{index}"
+                    ),
+                    device=self._device,
+                )
+                for index in range(16)
+            ]
+        return self._user_registers
 
     def _apply_sequence_settings(self, **kwargs) -> None:
         super()._apply_sequence_settings(**kwargs)
@@ -549,6 +565,7 @@ class Readout(SHFReadout):
         self.result_source = None
         self.result_length = None
         self.num_averages = None
+        self.mode = None
 
     def _init_readout_params(self):
         self._enable = Parameter(
@@ -593,6 +610,13 @@ class Readout(SHFReadout):
             self,
             self._device._get_node_dict(
                 f"qachannels/{self._index}/readout/result/averages"
+            ),
+            device=self._device,
+        )
+        self.mode = Parameter(
+            self,
+            self._device._get_node_dict(
+                f"qachannels/{self._index}/readout/result/mode"
             ),
             device=self._device,
         )
