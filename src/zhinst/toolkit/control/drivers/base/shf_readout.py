@@ -59,7 +59,9 @@ class SHFReadout:
     def is_running(self):
         return self._enable()
 
-    def arm(self, sync=True, length: int = None, averages: int = None) -> None:
+    def arm(
+        self, sync=True, length: int = None, averages: int = None, mode: str = None
+    ) -> None:
         """Prepare SHF device for readout and result acquisition.
 
         This method enables the QA Results Acquisition and resets the
@@ -77,6 +79,8 @@ class SHFReadout:
                 (default: None)
             averages (int): If specified, the result averages will be
                 set before arming the readout. (default: None)
+            mode (str): If specified, the result mode will be
+                set before arming the readout. (cyclic, sequential) (default: None)
 
         """
         # Stop the result logger to reset it
@@ -86,6 +90,8 @@ class SHFReadout:
             self.result_length(length)
         if averages is not None:
             self.num_averages(averages)
+        if mode is not None:
+            self.mode(mode)
         # Start the result logger again
         self.run(sync=sync)
 

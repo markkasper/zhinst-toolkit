@@ -553,6 +553,12 @@ class Readout(SHFReadout):
             are valid, other values are rounded down to the next power
             of 2. 1 means no averaging. The maximum setting is 32768.
             (default: 1).
+        mode (:class:`zhinst.toolkit.control.node_tree.Parameter`):
+            Selects the averaging order of the result.
+            0/cyclic: a sequence of multiple results is recorded first, then
+                averaged with the next repetition of the same sequence.
+            1/sequential: each result is recorded and averaged first, before
+                the next result is recorded and averaged.
 
     """
 
