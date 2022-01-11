@@ -52,6 +52,8 @@ class TestNodeTree:
         connection_module.listNodesJSON.assert_called_with("*")
         assert "awgcontrol" in tree
 
+        
+
         connection_broken = MagicMock()
         connection_broken.listNodesJSON.return_value = '{\n"zi/open": {\n"Node": "/ZI/OPEN"\n},\n"zi/close": {\n"Node": "/ZI/CLOSE"\n}\n}\n'
         with pytest.raises(Exception) as e_info:
@@ -66,6 +68,12 @@ class TestNodeTree:
         tree = NodeTree(connection, prefix_hide="DEV1234", preloaded_json=nodes_json)
         assert tree.prefix_hide == "dev1234"
         connection.listNodesJSON.mock_object.assert_not_called()
+
+    def test_root_node(self, connection):
+        tree = NodeTree(connection, "DEV1234")
+
+        root_node = Node(tree, tuple())
+        assert "demods" in root_node
 
     def test_node_contains(self, connection):
         tree = NodeTree(connection, "DEV1234")
@@ -87,6 +95,8 @@ class TestNodeTree:
 
     def test_node_access(self, connection):
         tree = NodeTree(connection, "DEV1234")
+
+        assert tree.demods.root == tree
 
         # test local variable
         assert not tree._test
@@ -119,6 +129,23 @@ class TestNodeTree:
         # dir of nested node
         assert "append" in dir(tree.demods)  # test for list
         assert "rate" in dir(tree.demods[0])
+
+    def test_wildcard_node(self, connection):
+        tree = NodeTree(connection, "DEV1234")
+        wildcard_node = tree.demods["*"].rate
+        assert wildcard_node.node == "/dev1234/demods/*/rate"
+        with pytest.raises(KeyError) as e_info:
+            wildcard_node.description
+
+        # TODO add dummy Data to mock
+        get_result = wildcard_node()
+        wildcard_node(1)
+
+        connection.get.return_value = None
+        with pytest.raises(KeyError) as e_info:
+            tree.hello["*"].rate()
+        with pytest.raises(KeyError) as e_info:
+            tree.hello["*"].rate(1)
 
     def test_get_cached(self, connection):
         tree = NodeTree(connection, "DEV1234")
@@ -449,6 +476,13 @@ class TestNodeTree:
 
         connection.getInt.return_value = 1
         assert not tree.demods[0].trigger.wait_for_state_change(2, timeout=0.5)
+
+        connection.getInt.side_effect = [1] * 3 + [2] * 6
+        assert tree.demods["*"].trigger.wait_for_state_change(2)
+
+        with pytest.raises(KeyError) as e_info:
+            tree.hello.wait_for_state_change(1)
+
 
     def test_nodetree_iterator(self, connection):
         tree = NodeTree(connection, "DEV1234")
