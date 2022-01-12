@@ -13,3 +13,5 @@ especially for device management and multiple AWG distributed control.
 The Toolkit forms the basis for instrument drivers used in QCoDeS and
 Labber. It comes in the form of a package compatible with Python 3.6+.
 """
+
+from zhinst.toolkit.data_server_session import DataServerSession

@@ -14,7 +14,7 @@ def data_dir(request):
 @pytest.fixture()
 def connection(data_dir):
 
-    json_path = data_dir / "nodedoc_dev1234.json"
+    json_path = data_dir / "nodedoc_dev1234_zi.json"
     with json_path.open("r", encoding="UTF-8") as file:
         nodes_json = file.read()
 
@@ -52,7 +52,7 @@ class TestNodeTree:
         connection_module.listNodesJSON.assert_called_with("*")
         assert "awgcontrol" in tree
 
-        
+
 
         connection_broken = MagicMock()
         connection_broken.listNodesJSON.return_value = '{\n"zi/open": {\n"Node": "/ZI/OPEN"\n},\n"zi/close": {\n"Node": "/ZI/CLOSE"\n}\n}\n'
@@ -477,7 +477,7 @@ class TestNodeTree:
         connection.getInt.return_value = 1
         assert not tree.demods[0].trigger.wait_for_state_change(2, timeout=0.5)
 
-        connection.getInt.side_effect = [1] * 3 + [2] * 6
+        connection.getInt.side_effect = [1] * 3 + [2] * 8
         assert tree.demods["*"].trigger.wait_for_state_change(2)
 
         with pytest.raises(KeyError) as e_info:
