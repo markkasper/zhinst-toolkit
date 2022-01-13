@@ -195,7 +195,7 @@ class NodeTree:
         """
         key = (
             self.node_to_raw_path(node)
-            if isinstance(node, list)
+            if isinstance(node, Node)
             else self.string_to_raw_path(node)
         )
         # resolve potential wildcards

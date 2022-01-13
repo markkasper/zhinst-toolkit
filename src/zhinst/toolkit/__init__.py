@@ -15,3 +15,4 @@ Labber. It comes in the form of a package compatible with Python 3.6+.
 """
 
 from zhinst.toolkit.data_server_session import DataServerSession
+from zhinst.toolkit.interface import *

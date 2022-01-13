@@ -1,17 +1,6 @@
 import pytest
-from fixtures import mock_connection, data_dir, session, hf2_session
+from fixtures import mock_connection, data_dir, session, hf2_session, base_instrument
 from zhinst.toolkit.driver.base import BaseInstrument
-
-
-@pytest.fixture()
-def base_instrument(data_dir, mock_connection, session):
-
-    json_path = data_dir / "nodedoc_dev1234.json"
-    with json_path.open("r", encoding="UTF-8") as file:
-        nodes_json = file.read()
-    mock_connection.return_value.listNodesJSON.return_value = nodes_json
-
-    yield BaseInstrument("DEV1234", "test_type", session)
 
 class TestBaseInstrument:
 

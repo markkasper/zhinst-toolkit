@@ -134,7 +134,7 @@ class TestDataServerSession:
 
         # delete existing device
         # connot be overwritten
-        with pytest.raises(RuntimeError) as e_info:
+        with pytest.raises(LookupError) as e_info:
             session.devices["dev1234"] = None
 
         with pytest.raises(RuntimeError) as e_info:

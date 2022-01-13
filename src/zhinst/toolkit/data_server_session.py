@@ -75,8 +75,8 @@ class Devices(MutableMapping):
         raise KeyError(key)
 
     def __setitem__(self, key, value):
-        raise RuntimeError(
-            "Illegal operation. " "Devices must be connected through the session."
+        raise LookupError(
+            "Illegal operation. Devices must be connected through the session."
         )
 
     def __delitem__(self, key):
