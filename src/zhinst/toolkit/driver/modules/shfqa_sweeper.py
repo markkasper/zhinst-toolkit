@@ -6,7 +6,7 @@
 import logging
 from zhinst.toolkit.nodetree import Node
 from zhinst.toolkit.driver.parsers import Parse
-from zhinst.toolkit import AveragingMode, MappingMode, TriggerImpedance
+from zhinst.toolkit.interface import AveragingMode, MappingMode, TriggerImpedance
 from zhinst.utils.shf_sweeper import (
     ShfSweeper as CoreSweeper,
     RfConfig,

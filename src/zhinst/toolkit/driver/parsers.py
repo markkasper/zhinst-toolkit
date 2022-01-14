@@ -3,7 +3,6 @@
 # This software may be modified and distributed under the terms
 # of the MIT license. See the LICENSE file for details.
 import numpy as np
-import random
 import logging
 
 UHFQA_SAMPLE_RATE = 1.8e9
@@ -86,19 +85,6 @@ class Parse:
     def get_rf_lf(value):
         value = int(value)
         mapping = {"rf": 1, "lf": 0}
-        value = Parse._getter_validate_and_parse(value, mapping)
-        return value
-
-    @staticmethod
-    def set_on_off(value):
-        mapping = {"on": 1, "off": 0}
-        value = Parse._setter_validate_and_parse(value, mapping)
-        return value
-
-    @staticmethod
-    def get_on_off(value):
-        value = int(value)
-        mapping = {"on": 1, "off": 0}
         value = Parse._getter_validate_and_parse(value, mapping)
         return value
 
@@ -240,8 +226,8 @@ node_parser = {
             "SetParser": Parse.set_true_false,
         },
         "scopes/0/channels/*/enable": {
-            "GetParser": Parse.get_on_off,
-            "SetPa≥rser": Parse.set_on_off,
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
         },
         "scopes/0/trigger/delay": {
             "SetParser": lambda v: Parse.multiple_of(v, 2e-9, "nearest"),
@@ -268,12 +254,12 @@ node_parser = {
             "SetParser": lambda v: Parse.greater_equal(v, 0),
         },
         "qachannels/*/input/on": {
-            "GetParser": Parse.get_on_off,
-            "SetParser": Parse.set_on_off,
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
         },
         "qachannels/*/output/on": {
-            "GetParser": Parse.get_on_off,
-            "SetParser": Parse.set_on_off,
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
         },
         "qachannels/*/input/range": {
             "SetParser": [
@@ -333,5 +319,95 @@ node_parser = {
         "qachannels/*/spectroscopy/delay": {
             "SetParser": lambda v: Parse.multiple_of(v, 2e-9, "nearest")
         },
-    }
+    },
+    "SHFSG": {
+        "system/clocks/referenceclock/in/status": {
+            "GetParser": Parse.get_locked_status,
+        },
+        "system/clocks/referenceclock/out/enable": {
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
+        },
+        "system/clocks/referenceclock/out/freq": {
+            "SetParser": lambda v: Parse.greater_equal(v, 0),
+        },
+        "sgchannels/*/centerfreq": {
+            "SetParser": lambda v: Parse.greater_equal(v, 0),
+        },
+        "sgchannels/*/output/on": {
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
+        },
+        "sgchannels/*/output/range": {
+            "SetParser": [
+                lambda v: Parse.greater_equal(v, -30),
+                lambda v: Parse.smaller_equal(v, 10),
+                lambda v: Parse.multiple_of(v, 5, "nearest"),
+            ],
+        },
+        "sgchannels/*/output/rflfpath": {
+            "GetParser": Parse.get_rf_lf,
+            "SetParser": Parse.set_rf_lf,
+        },
+        "sgchannels/*/awg/enable": {
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
+        },
+        "sgchannels/*/awg/single": {
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
+        },
+        "sgchannels/*/awg/outputs/*/enables/*": {
+            "GetParser": Parse.get_true_false,
+        },
+        "sgchannels/*/awg/outputs/*/gains/*": {
+            "SetParser": [
+                lambda v: Parse.smaller_equal(v, 1.0),
+                lambda v: Parse.greater_equal(v, -1.0),
+            ],
+        },
+        "sgchannels/*/oscs/*/freq": {
+            "SetParser": [
+                lambda v: Parse.smaller_equal(v, 1e9),
+                lambda v: Parse.greater_equal(v, -1e9),
+            ],
+        },
+        "sgchannels/*/sines/*/phaseshift": {
+            "SetParser": Parse.phase,
+        },
+        "sgchannels/*/sines/*/oscselect": {
+            "SetParser": [
+                lambda v: Parse.greater_equal(v, 0),
+                lambda v: Parse.smaller_equal(v, 7),
+                lambda v: Parse.multiple_of(v, 1, "nearest"),
+            ],
+        },
+        "sgchannels/*/sines/*/harmonic": {
+            "SetParser": [
+                lambda v: Parse.greater_equal(v, 1),
+                lambda v: Parse.smaller_equal(v, 1023),
+                lambda v: Parse.multiple_of(v, 1, "nearest"),
+            ],
+        },
+        "sgchannels/*/sines/*/i/enable": {
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
+        },
+        "sgchannels/*/sines/*/q/enable": {
+            "GetParser": Parse.get_true_false,
+            "SetParser": Parse.set_true_false,
+        },
+        "sgchannels/*/sines/*/i/sin/amplitude": {
+            "SetParser": lambda v: Parse.greater_equal(v, 0),
+        },
+        "sgchannels/*/sines/*/i/cos/amplitude": {
+            "SetParser": lambda v: Parse.greater_equal(v, 0),
+        },
+        "sgchannels/*/sines/*/q/sin/amplitude": {
+            "SetParser": lambda v: Parse.greater_equal(v, 0),
+        },
+        "sgchannels/*/sines/*/q/cos/amplitude": {
+            "SetParser": lambda v: Parse.greater_equal(v, 0),
+        },
+    },
 }

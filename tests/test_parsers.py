@@ -12,14 +12,6 @@ class TestParsers:
         assert Parse.get_rf_lf(1) == "rf"
         assert Parse.get_rf_lf(0) == "lf"
 
-    def test_set_on_off(self):
-        assert Parse.set_on_off("on") == 1
-        assert Parse.set_on_off("off") == 0
-
-    def test_get_on_off(self):
-        assert Parse.get_on_off(1) == "on"
-        assert Parse.get_on_off(0) == "off"
-
     def test_set_true_false(self):
         assert Parse.set_true_false(True) == 1
         assert Parse.set_true_false(False) == 0

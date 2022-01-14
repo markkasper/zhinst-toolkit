@@ -1,7 +1,5 @@
 import logging
-import time
 import numpy as np
-from enum import Enum
 import zhinst.deviceutils.shfqa as deviceutils
 from zhinst.toolkit.interface import AveragingMode
 from zhinst.toolkit.nodetree import Node

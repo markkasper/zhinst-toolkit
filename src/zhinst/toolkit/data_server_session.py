@@ -9,6 +9,8 @@ import zhinst.ziPython as ziPython
 from zhinst.toolkit.nodetree import NodeTree, Node
 from zhinst.toolkit.driver.base import BaseInstrument
 from zhinst.toolkit.helper import lazy_property
+from zhinst.toolkit.driver.shfqa import SHFQA
+from zhinst.toolkit.driver.shfsg import SHFSG
 
 
 class Devices(MutableMapping):
@@ -26,7 +28,12 @@ class Devices(MutableMapping):
     def __init__(self, session: "DataServerSession"):
         self._session = session
         self._devices = {}
-        self._device_classes = {}
+        self._device_classes = {
+            "SHFQA4": SHFQA,
+            "SHFQA2": SHFQA,
+            "SHFSG4": SHFSG,
+            "SHFSG8": SHFSG,
+        }
 
     def connected(self) -> List[str]:
         """Get a list of devices connected to the data server.

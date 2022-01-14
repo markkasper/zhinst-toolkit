@@ -8,8 +8,7 @@ from zhinst.toolkit.driver.base import BaseInstrument
 
 logger = logging.getLogger(__name__)
 
-
-class Waveforms(MutableMapping):
+class SHFQAWaveforms(MutableMapping):
     def __init__(self):
         self._waveforms = {}
 
@@ -125,7 +124,7 @@ class Generator(Node):
         )
 
     def write_to_waveform_memory(
-        self, waveforms: Waveforms, clear_existing: bool = True
+        self, waveforms: SHFQAWaveforms, clear_existing: bool = True
     ) -> None:
         """Writes pulses to the waveform memory
 

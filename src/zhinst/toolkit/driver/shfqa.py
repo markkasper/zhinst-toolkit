@@ -15,7 +15,7 @@ import logging
 import warnings
 from typing import List
 import zhinst.deviceutils.shfqa as deviceutils
-from zhinst.toolkit import SHFQAChannelMode
+from zhinst.toolkit.interface import SHFQAChannelMode
 from zhinst.toolkit.nodetree import Node
 from zhinst.toolkit.helper import lazy_property
 from zhinst.toolkit.driver.base import BaseInstrument

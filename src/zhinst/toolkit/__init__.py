@@ -16,3 +16,5 @@ Labber. It comes in the form of a package compatible with Python 3.6+.
 
 from zhinst.toolkit.data_server_session import DataServerSession
 from zhinst.toolkit.interface import *
+from zhinst.toolkit.driver.modules.awg import Waveforms
+from zhinst.toolkit.driver.modules.generator import SHFQAWaveforms

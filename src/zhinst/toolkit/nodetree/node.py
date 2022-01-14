@@ -450,7 +450,7 @@ class Node:
             if "Options" in self._node_information and isinstance(value, int):
                 value = self._option_map_reverse.get(value)
             start_time = time.time()
-            while start_time + timeout >= time.time() and self._get() != value:
+            while start_time + timeout >= time.time() and self._get(parse=False) != value:
                 time.sleep(sleep_time)
             return self._get() == value
         except KeyError:

@@ -3,7 +3,8 @@ from itertools import cycle
 from unittest.mock import patch
 import numpy as np
 from fixtures import mock_connection, data_dir, session, shfqa
-from zhinst.toolkit.driver.modules.generator import Generator, Waveforms
+from zhinst.toolkit.driver.modules.generator import Generator
+from zhinst.toolkit import SHFQAWaveforms
 
 
 @pytest.fixture()
@@ -75,7 +76,7 @@ class TestGenerator:
             )
 
     def test_waveforms(self):
-        waveforms = Waveforms()
+        waveforms = SHFQAWaveforms()
         assert len(waveforms) == 0
 
         waveforms[0] = np.zeros(100)
@@ -97,8 +98,8 @@ class TestGenerator:
 
     def test_write_to_waveform_memory(self, session, generator, mock_connection):
 
-        waveforms = Waveforms()
-        waveforms_long = Waveforms()
+        waveforms = SHFQAWaveforms()
+        waveforms_long = SHFQAWaveforms()
         waveforms_long[1000] = np.zeros(1000)
         with patch(
             "zhinst.toolkit.driver.modules.generator.deviceutils", autospec=True

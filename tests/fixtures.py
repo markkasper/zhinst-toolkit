@@ -4,6 +4,7 @@ from pathlib import Path
 from zhinst.toolkit import DataServerSession
 from zhinst.toolkit.driver.base import BaseInstrument
 from zhinst.toolkit.driver.shfqa import SHFQA
+from zhinst.toolkit.driver.shfsg import SHFSG
 
 
 @pytest.fixture()
@@ -49,3 +50,13 @@ def shfqa(data_dir, mock_connection, session):
     mock_connection.return_value.listNodesJSON.return_value = nodes_json
 
     yield SHFQA("DEV1234", "SHFQA4", session)
+
+@pytest.fixture()
+def shfsg(data_dir, mock_connection, session):
+
+    json_path = data_dir / "nodedoc_dev1234_shfsg.json"
+    with json_path.open("r", encoding="UTF-8") as file:
+        nodes_json = file.read()
+    mock_connection.return_value.listNodesJSON.return_value = nodes_json
+
+    yield SHFSG("DEV1234", "SHFSG8", session)
