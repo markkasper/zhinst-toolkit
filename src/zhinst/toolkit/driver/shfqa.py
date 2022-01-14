@@ -17,7 +17,7 @@ from typing import List
 import zhinst.deviceutils.shfqa as deviceutils
 from zhinst.toolkit.interface import SHFQAChannelMode
 from zhinst.toolkit.nodetree import Node
-from zhinst.toolkit.helper import lazy_property
+from zhinst.toolkit.helper import lazy_property, NodeList
 from zhinst.toolkit.driver.base import BaseInstrument
 from zhinst.toolkit.driver.modules.generator import Generator
 from zhinst.toolkit.driver.modules.readout import Readout
@@ -168,15 +168,22 @@ class SHFQA(BaseInstrument):
     @lazy_property
     def qachannels(self) -> List[QAChannel]:
         """QAChannels"""
-        return [
-            QAChannel(self, self._session, self._tree + ("qachannels", str(i)))
-            for i in range(self.num_qachannels)
-        ]
+        return NodeList(
+            [
+                QAChannel(self, self._session, self._tree + ("qachannels", str(i)))
+                for i in range(self.num_qachannels)
+            ],
+            self._root,
+            self._tree + ("qachannels",),
+        )
 
     @lazy_property
     def scopes(self) -> List[SHFScope]:
         """Scopes"""
-        return [
+        return NodeList([
             SHFScope(self, self._session, self._tree + ("scopes", str(i)))
             for i in range(self.num_scopes)
-        ]
+        ],
+            self._root,
+            self._tree + ("qachannels",),
+        )

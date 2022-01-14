@@ -374,11 +374,11 @@ class AWGModule(Node):
 
         progress = awg.progress()
         logger.info(f"{repr(self)}: Uploading ELF file to device")
-        while progress < 1.0 and awg.elf.status() == 2 and self.ready() == 0:
+        while progress < 1.0 or awg.elf.status() == 2 or self.ready() == 0:
             if time.time() - start >= timeout:
                 logger.critical(f"{repr(self)}: Program upload timed out")
                 raise TimeoutError(f"{repr(self)}: Program upload timed out")
-            print(f"{repr(self)}: {progress*100}%")
+            logger.info(f"{repr(self)}: {progress*100}%")
             time.sleep(0.1)
             progress = awg.progress()
 
@@ -394,7 +394,7 @@ class AWGModule(Node):
                 "Check the log for detailed information"
             )
 
-    def write_to_waveform_memory(self, waveforms: Waveforms) -> None:
+    def write_to_waveform_memory(self, waveforms: Waveforms, indexes: list = None) -> None:
         """Writes waveforms to the waveform memory.
 
         The waveforms must already be assigned in the sequencer programm.
@@ -410,6 +410,8 @@ class AWGModule(Node):
         num_waveforms = len(waveform_info)
         commands = []
         for waveform_index in waveforms.keys():
+            if indexes and waveform_index not in indexes:
+                continue
             if waveform_index >= num_waveforms:
                 raise IndexError(
                     f"There are {num_waveforms} waveforms defined "

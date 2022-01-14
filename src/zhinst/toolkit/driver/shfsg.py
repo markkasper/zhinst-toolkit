@@ -15,7 +15,7 @@ import logging
 import warnings
 from typing import List
 from zhinst.toolkit.nodetree import Node
-from zhinst.toolkit.helper import lazy_property
+from zhinst.toolkit.helper import lazy_property, NodeList
 from zhinst.toolkit.driver.base import BaseInstrument
 from zhinst.toolkit.driver.modules.awg import AWGModule
 
@@ -58,6 +58,15 @@ class SGChannel(Node):
             self._index,
             ct_schema_url="https://docs.zhinst.com/shfsg/commandtable/v1_0/schema",
         )
+
+    @property
+    def awg_modulation_freq(self) -> float:
+        """Modulation frequency of the awg.
+
+        Depends on the selected oscillator
+        """
+        selected_osc = self.sines[0].oscselect()
+        return self.oscs[selected_osc].freq()
 
 
 class SHFSG(BaseInstrument):
@@ -111,7 +120,10 @@ class SHFSG(BaseInstrument):
     @lazy_property
     def sgchannels(self) -> List[SGChannel]:
         """SGChannels"""
-        return [
+        return NodeList([
             SGChannel(self, self._session, self._tree + ("sgchannels", str(i)))
             for i in range(self.num_sgchannels)
-        ]
+        ],
+            self._root,
+            self._tree + ("sgchannels",),
+        )

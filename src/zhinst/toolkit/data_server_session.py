@@ -355,8 +355,7 @@ class DataServerSession(Node):
             for node, data in data_raw.items():
                 node_split = node.split("/")
                 device = self.devices[node_split[1]]
-
-                node = Node(device.nodetree, tuple(node_split[2:]))
+                node = Node(device.root, tuple(node_split[2:]))
                 if device not in data:
                     polled_data[device] = {}
                 polled_data[device][node] = data

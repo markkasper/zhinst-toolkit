@@ -105,6 +105,8 @@ class TestAWG:
 
         # Upload error
         upload_process = cycle([1])
+        elf_status = 1
+        ready = 1
         with pytest.raises(RuntimeError) as e_info:
             awg_module.load_sequencer_program("Hello", timeout=0.5)
 
